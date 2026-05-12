@@ -26,8 +26,7 @@ void rb_write(RingBuf* rb, char newChar, int * write_index){
     atomic_store_explicit(&rb->head, ++h & BUFFER_MASK, memory_order_relaxed);
     
     //  go through readers and move, if full
-    for(int i = 0; i < rb->num_readers; i++)
-    {
+    for(int i = 0; i < rb->num_readers; i++){
         //  load from reader, and since the other thread can write 
         //  ensure this load happens before anything
         //  acquire means nothing can happen above
@@ -97,8 +96,7 @@ void rb_free(RingBuf* rb){
     free(rb);
 }
 
-char get_rand_char()
-{
+char get_rand_char(){
     const size_t max_index = sizeof(charset) - 1; // Exclude null terminator
 
     // Generate a random index
@@ -130,8 +128,7 @@ void rb_write_mutex(RingBuf* rb, char newChar){
     
     //  if h == t after head move, we are full and we need to move the read pointer over so
     //  we can keep writing
-    for(int i = 0; i < rb->num_readers; i++)
-    {
+    for(int i = 0; i < rb->num_readers; i++){
         size_t t = rb->readers[i];
 
         if (rb->head==t){
@@ -143,8 +140,7 @@ void rb_write_mutex(RingBuf* rb, char newChar){
 }
 
 //  Thread for writing to the buffer
-void * write_thread(void * rb)
-{
+void * write_thread(void * rb){
     char c;
     int ret;
 
@@ -158,8 +154,7 @@ void * write_thread(void * rb)
 }
 
 //  First thread for buffer read
-void * read_thread_one(void * rb)
-{
+void * read_thread_one(void * rb){
     int id = reader_one;
     int read_index;
     char c;
@@ -172,8 +167,7 @@ void * read_thread_one(void * rb)
 }
 
 //  second thread for buffer read
-void * read_thread_two(void * rb)
-{
+void * read_thread_two(void * rb){
     int id = reader_two;
     int read_index;
     char c;
@@ -201,11 +195,9 @@ void handle_sigint(int sig) {
 //  This function runs over atomic and mutex writes
 //  PROFILE_ITERATIONS number of times and compares
 //  the difference in clock cycles consumed
-void profile(RingBuf* rb)
-{
+void profile(RingBuf* rb){
     clock_t start = clock();
-    for(int i =0;i<PROFILE_ITERATIONS;i++)
-    {
+    for(int i =0;i<PROFILE_ITERATIONS;i++){
         rb_write_mutex(rb, 'A');
     }
     clock_t end = clock() ;
@@ -213,8 +205,7 @@ void profile(RingBuf* rb)
 
     start = clock();
     int index;
-    for(int i =0;i<PROFILE_ITERATIONS;i++)
-    {
+    for(int i =0;i<PROFILE_ITERATIONS;i++){
         rb_write(rb, 'A', &index);
     }
     end = clock();
@@ -226,14 +217,12 @@ void profile(RingBuf* rb)
 }
 
 //  Register a new reader
-int get_reader_id(RingBuf* rb)
-{
+int get_reader_id(RingBuf* rb){
     return rb->num_readers++;
 }
 
 //  register the function for sigint
-void register_sigint()
-{
+void register_sigint(){
     struct sigaction sa;
     
     // Initialize sigaction structure
@@ -249,8 +238,7 @@ void register_sigint()
     }
 }
 
-int main()
-{
+int main(){
     //  Initialize
     register_sigint();
     pthread_mutex_init(&mutex, NULL);
