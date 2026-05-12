@@ -160,9 +160,9 @@ void * read_thread_one(void * rb){
     char c;
 
     while(true){
-        c = rb_read(rb, id, &read_index);
-        printf("\treader_one:%c at index:%d\n", c, read_index);
         sleep(2);
+        c = rb_read(rb, id, &read_index);
+        printf("\treader_one:%c at index:%d\n", c, read_index);   
     }
 }
 
@@ -173,9 +173,9 @@ void * read_thread_two(void * rb){
     char c;
 
     while(true){
+        sleep(3);
         c = rb_read(rb, id, &read_index);
         printf("\treader_two:%c at index:%d\n", c, read_index);
-        sleep(3);
     }
 }
 
