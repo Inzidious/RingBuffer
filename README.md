@@ -1,4 +1,4 @@
-This ringbuffer is a single producer, multiple consumer circularvqueue that uses atomics to maintain lock free read and write functionality.
+This ringbuffer is a single producer, multiple consumer circular queue that uses atomics to maintain lock free read and write functionality.
 
 There's a mutex based write function which the profiler uses to compare write speeds against the atomic version.
 
